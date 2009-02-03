@@ -13,11 +13,13 @@
   <script type="text/javascript" src="config.js"></script>
 
   <vbox>
-    <dialogheader title="Relic" description="API Key" />
+    <dialogheader title="Foxy Relic" description="New Relic in the Browser?" />
     <groupbox>
-      <description>Your license key for New Relic</description>
-      <label value="license key" />
+      <label value="Your License Key" />
       <textbox id="licensekey" />
+
+      <label value="Update Interval (seconds)" />
+      <textbox id="interval" />
     </groupbox>
   </vbox>
 </dialog>

@@ -6,22 +6,39 @@ var prefs = Cc['@mozilla.org/preferences-service;1']
   .getService(Ci.nsIPrefService)
   .getBranch('extensions.relic.');
 
-function getChar(prefName, defaultValue) {
-  if (prefs.getPrefType(prefName)){
-    var rval = prefs.getCharPref(prefName);
-    if (rval != '') {
-      return rval;
-    }
-  }
+function getPref(name, value) {
+  var kind = prefs.getPrefType(name);
 
-  return defaultValue;
+  switch (kind) {
+  case prefs.PREF_BOOL:
+    return prefs.getBoolPref(name);
+  case prefs.PREF_INT:
+    return prefs.getIntPref(name);
+  case prefs.PREF_STRING:
+    return prefs.getCharPref(name);
+  default:
+    return value;
+  }
 }
+
+function setPref(name, value) {
+  switch (typeof value) {
+  case 'boolean':
+    return prefs.setBoolPref(name, value);
+  case 'number':
+    return prefs.setIntPref(name, value);
+  case 'string':
+    return prefs.setCharPref(name, value);
+  }
+};
 
 function init() {
   /* populate with the current settings */
-  $('licensekey').value = getChar('licensekey', '');
+  $('licensekey').value = getPref('licensekey', '');
+  $('interval').value = getPref('interval', 60);
 }
 
 function save() {
-  prefs.setCharPref('licensekey', $('licensekey').value);
+  setPref('licensekey', $('licensekey').value);
+  setPref('interval', parseInt($('interval').value));
 }

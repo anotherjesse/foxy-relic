@@ -2,3 +2,6 @@
   list-style-image: url("chrome://relic/skin/newrelic.png");
 }
 
+#relic-stats .threshold1 { background: green; }
+#relic-stats .threshold2 { background: yellow; }
+#relic-stats .threshold3 { background: red; }

@@ -14,6 +14,7 @@
     </menupopup>
 
     <statusbarpanel id="relic" contextmenu="relic-prefs">
+      <hbox id="relic-stats" />
       <toolbarbutton  type="menu" label="newrelic" id="relic-button">
         <menupopup onpopupshowing="relic.popup(this)" />
       </toolbarbutton>

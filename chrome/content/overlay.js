@@ -27,26 +27,28 @@ var relic = new function() {
     node.appendChild(menuitem);
   }
 
-  this.popup = function(node) {
-    if (!svc.licensekey()) {
-      return window.openDialog('chrome://relic/content/config.xul', 'config', 'centerscreen,chrome,modal');
-    }
-
-
-    while (node.firstChild) {
-      node.removeChild(node.firstChild);
-    }
-
-    var accounts = svc.accounts();
-    for (var account_id in accounts) {
-      var account = accounts[account_id];
-      for (var app_id in account.apps) {
-        addMenuItem(account, account.apps[app_id], node);
-      }
-    }
-  }
-
   this.onNotify = function(data) {
+    var box = $('relic-stats');
+
+    var app = data..application[0];
+
+    var metrics = app..threshold_value;
+    for (var i=0; i<metrics.length(); i++) {
+      var metric = metrics[i];
+      var domid = 'relic-' + metric.@name.replace(' ', '-', 'g');
+
+      var stat = $(domid);
+      if (!stat) {
+        stat = document.createElement('label');
+        stat.setAttribute('id', domid);
+      }
+
+      stat.setAttribute('value', metric.@name);
+      stat.setAttribute('tooltiptext', metric.@formatted_metric_value);
+      stat.setAttribute('id', 'relic-' + metric.@name.replace(' ', '-', 'g'));
+      stat.setAttribute('class', 'threshold' + metric.@threshold_value);
+      box.appendChild(stat);
+    }
   };
 
   function init() {

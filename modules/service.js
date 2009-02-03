@@ -9,8 +9,31 @@ var prefs = Cc['@mozilla.org/preferences-service;1']
 
 prefs.QueryInterface(Ci.nsIPrefBranch2);
 
+function getPref(name, value) {
+  var kind = prefs.getPrefType(name);
+
+  switch (kind) {
+  case prefs.PREF_BOOL:
+    return prefs.getBoolPref(name);
+  case prefs.PREF_INT:
+    return prefs.getIntPref(name);
+  case prefs.PREF_STRING:
+    return prefs.getCharPref(name);
+  default:
+    return value;
+  }
+}
+
 var _licensekey;
 var _data;
+
+var _timer = Cc['@mozilla.org/timer;1']
+               .createInstance(Ci.nsITimer);
+
+function setupTimer(delay) {
+  _timer.cancel();
+  _timer.initWithCallback({notify: getUpdate}, delay*1000, Ci.nsITimer.TYPE_REPEATING_SLACK);
+}
 
 /* listener for windows */
 
@@ -22,7 +45,7 @@ function addListener(listener) {
     listener.onNotify(_data);
   }
   else {
-    get_apps();
+    getUpdate();
   }
 }
 
@@ -46,45 +69,21 @@ function notifyListeners(msg) {
 
 
 function accounts_url() {
-  return "http://rpm.newrelic.com/accounts.xml";
-}
-
-function apps_url(app_id) {
-  return "http://rpm.newrelic.com/accounts/" + app_id + "/applications.xml";
+  return "http://rpm.newrelic.com/accounts.xml?include=application_health";
 }
 
 var _apps = {};
 
+function log(str) {
+  dump("relic: " + str + "\n");
+}
+
 /* api integration */
-function get_apps() {
-
-  _accounts = {};
-
-  function add_account(account_id, name) {
-    _accounts[account_id] = { name: name };
-
-    xhr(apps_url(account_id), function(xml) {
-          var apps = {};
-
-          var applications = xml.getElementsByTagName('application');
-          for (var i = 0; i<applications.length; i++) {
-            apps[applications[i].getElementsByTagName('id')[0].firstChild.data] = {
-              name: applications[i].getElementsByTagName('name')[0].firstChild.data,
-              url: applications[i].getElementsByTagName('overview-url')[0].firstChild.data
-            };
-          }
-          _accounts[account_id].apps = apps;
-        });
-  }
-
+function getUpdate() {
   xhr(accounts_url(), function(xml) {
-        var accounts = xml.getElementsByTagName('account');
-        for (var i = 0; i<accounts.length; i++) {
-          add_account(accounts[i].getElementsByTagName('id')[0].firstChild.data,
-                      accounts[i].getElementsByTagName('name')[0].firstChild.data);
-        }
+        _data = xml;
+        notifyListeners(xml);
       });
-
 }
 
 function xhr(url, onSuccess, onFailure) {
@@ -95,7 +94,11 @@ function xhr(url, onSuccess, onFailure) {
 
     req.onload = function() {
       if (req.status == 200) {
-        onSuccess(req.responseXML);
+        var response = req.responseText; // bug 270553
+        response = response.replace(/^<\?xml\s+version\s*=\s*(["'])[^\1]+\1[^?]*\?>/, ""); // bug 336551
+        var e4x = new XML(response);
+
+        onSuccess(e4x);
       }
     };
     req.open("GET", url);
@@ -114,7 +117,11 @@ var prefObserver = {
 
     if (data=='licensekey') {
       _licensekey = prefs.getCharPref("licensekey");
-      get_apps();
+      getUpdate();
+    }
+    if (data=='interval') {
+      _interval = prefs.getIntPref("interval");
+      setupTimer(_interval);
     }
   }
 };
@@ -123,7 +130,9 @@ prefs.addObserver('', prefObserver, false);
 
 try {
   _licensekey = prefs.getCharPref("licensekey");
-  get_apps();
+  _interval = getPref("interval", 60);
+  setupTimer(_interval);
+  getUpdate();
 } catch(e) {}
 
 /* exposed parts of service */
@@ -135,7 +144,7 @@ svc.removeListener = removeListener;
 svc.accounts = function() {
   return _accounts;
 }
-svc.update = get_apps;
+svc.update = getUpdate;
 svc.licensekey = function() {
   if (_licensekey && _licensekey != '') {
     return _licensekey;
