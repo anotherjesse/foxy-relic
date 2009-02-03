@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
+
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        title="New Relic Settings"
+        id="relicConfig"
+        width="400"
+        height="400"
+        onload="init()"
+        ondialogaccept="save();"
+        buttons="cancel,accept">
+
+  <script type="text/javascript" src="config.js"></script>
+
+  <vbox>
+    <dialogheader title="Relic" description="API Key" />
+    <groupbox>
+      <description>Your license key for New Relic</description>
+      <label value="license key" />
+      <textbox id="licensekey" />
+    </groupbox>
+  </vbox>
+</dialog>

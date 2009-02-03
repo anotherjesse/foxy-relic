@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://relic/skin/overlay.css" type="text/css"?>
+
+<overlay id="relicOverlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+         xmlns:html="http://www.w3.org/1999/xhtml">
+
+  <script type="application/x-javascript" src="chrome://relic/content/overlay.js" />
+
+  <statusbar id="status-bar">
+    <menupopup id="relic-prefs">
+      <menuitem label="Options" onclick="relic.preferences()" />
+    </menupopup>
+
+    <statusbarpanel id="relic" contextmenu="relic-prefs">
+      <toolbarbutton  type="menu" label="newrelic" id="relic-button">
+        <menupopup onpopupshowing="relic.popup(this)" />
+      </toolbarbutton>
+    </statusbarpanel>
+  </statusbar>
+
+</overlay>
+
