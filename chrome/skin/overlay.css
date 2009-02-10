@@ -2,6 +2,19 @@
   list-style-image: url("chrome://relic/skin/newrelic.png");
 }
 
+#relic-stats label:first
+{
+  border-left: none;
+}
+
+#relic-stats label
+{
+  margin: 0;
+  padding: 0 4px;
+  border-right: 1px solid black;
+}
+
+
 #relic-stats .threshold1 { background: green; }
 #relic-stats .threshold2 { background: yellow; }
 #relic-stats .threshold3 { background: red; }

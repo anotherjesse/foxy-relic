@@ -4,9 +4,10 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest">
     <em:name>foxy relic</em:name>
     <em:id>relic@overstimulate.com</em:id>
-    <em:version>0.1</em:version>
+    <em:version>BUILD</em:version>
     <em:homepageURL>http://overstimulate.com/projects/foxy-relic</em:homepageURL>
     <em:optionsURL>chrome://relic/content/config.xul</em:optionsURL>
+    <em:updateURL>https://overstimulate.s3.amazonaws.com/update-relic.rdf</em:updateURL>
     <em:creator>Jesse Andrews; http://overstimulate.com</em:creator>
 
     <!-- firefox -->

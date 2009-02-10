@@ -1,6 +1,8 @@
 var relic = new function() {
   var inst = this;
 
+  inst.url = 'http://rpm.newrelic.com';
+
   Cu.import("resource://relic/service.js");
 
   var $ = function(x) { return document.getElementById(x); };
@@ -9,9 +11,9 @@ var relic = new function() {
     window.openDialog('chrome://relic/content/config.xul', 'config', 'centerscreen,chrome,modal');
   };
 
-  this.show = function() {
+  this.show = function(event) {
     if (svc.licensekey()) {
-      document.showPopup($('foofighter'), 0, 0, "popup", "bottomleft", "topleft");
+      openUILinkIn(inst.url, whereToOpenLink(event));
     }
     else {
       window.openDialog('chrome://relic/content/config.xul', 'config', 'centerscreen,chrome,modal');
@@ -29,8 +31,11 @@ var relic = new function() {
 
   this.onNotify = function(data) {
     var box = $('relic-stats');
+    $('relic-setup').hidden = true;
 
     var app = data..application[0];
+
+    inst.url = app['overview-url'];
 
     var metrics = app..threshold_value;
     for (var i=0; i<metrics.length(); i++) {

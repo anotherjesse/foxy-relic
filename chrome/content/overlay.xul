@@ -13,11 +13,15 @@
       <menuitem label="Options" onclick="relic.preferences()" />
     </menupopup>
 
-    <statusbarpanel id="relic" contextmenu="relic-prefs">
-      <hbox id="relic-stats" />
-      <toolbarbutton  type="menu" label="newrelic" id="relic-button">
-        <menupopup onpopupshowing="relic.popup(this)" />
-      </toolbarbutton>
+    <statusbarpanel id="relic" contextmenu="relic-prefs" onclick="relic.show(event)">
+      <hbox id="relic-stats">
+        <label id="relic-setup" value="Setup Relic" />
+      </hbox>
+<!--      <toolbarbutton  type="menu-button" id="relic-button">
+        <menupopup onpopupshowing="relic.popup(this)">
+          <menuitem label="bar"/>
+        </menupopup>
+      </toolbarbutton> -->
     </statusbarpanel>
   </statusbar>
 
