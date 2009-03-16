@@ -24,8 +24,13 @@ function getPref(name, value) {
   }
 }
 
+function log(str) {
+  dump("relic: " + str + "\n");
+}
+
 var _licensekey;
 var _data;
+
 
 var _timer = Cc['@mozilla.org/timer;1']
                .createInstance(Ci.nsITimer);
@@ -65,22 +70,11 @@ function notifyListeners(msg) {
   );
 }
 
-/* web service urls */
-
-
-function accounts_url() {
-  return "http://rpm.newrelic.com/accounts.xml?include=application_health";
-}
-
-var _apps = {};
-
-function log(str) {
-  dump("relic: " + str + "\n");
-}
 
 /* api integration */
 function getUpdate() {
-  xhr(accounts_url(), function(xml) {
+  xhr("http://rpm.newrelic.com/accounts.xml?include=application_health",
+      function(xml) {
         _data = xml;
         notifyListeners(xml);
       });
@@ -129,7 +123,7 @@ var prefObserver = {
 prefs.addObserver('', prefObserver, false);
 
 try {
-  _licensekey = prefs.getCharPref("licensekey");
+  _licensekey = getPref("licensekey");
   _interval = getPref("interval", 60);
   setupTimer(_interval);
   getUpdate();
@@ -140,10 +134,8 @@ try {
 var EXPORTED_SYMBOLS = ['svc'];
 svc = {};
 svc.addListener = addListener;
+svc.getPref = getPref;
 svc.removeListener = removeListener;
-svc.accounts = function() {
-  return _accounts;
-}
 svc.update = getUpdate;
 svc.licensekey = function() {
   if (_licensekey && _licensekey != '') {

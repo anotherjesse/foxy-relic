@@ -11,10 +11,10 @@
 {
   margin: 0;
   padding: 0 4px;
-  border-right: 1px solid black;
 }
 
 
-#relic-stats .threshold1 { background: green; }
-#relic-stats .threshold2 { background: yellow; }
-#relic-stats .threshold3 { background: red; }
+#relic-stats
+{
+  font-size: 0;
+}
