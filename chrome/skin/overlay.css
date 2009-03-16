@@ -1,20 +1,17 @@
-#relic-button {
+#relic-button
+{
   list-style-image: url("chrome://relic/skin/newrelic.png");
 }
 
-#relic-stats label:first
+#relic-button image
 {
-  border-left: none;
-}
-
-#relic-stats label
-{
-  margin: 0;
-  padding: 0 4px;
+  border: none !important;
+  padding: 0 !important;
 }
 
 
 #relic-stats
 {
   font-size: 0;
+  cursor: pointer;
 }
